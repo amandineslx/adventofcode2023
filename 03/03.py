@@ -36,48 +36,24 @@ class Stars:
         self.stars[line][index].multiply_power(multiplicator)
 
 def find_stars(previous_line, current_line, next_line, iterator, stars):
-    print("----")
-    print(previous_line[:-1])
-    print(current_line[:-1])
-    print(next_line[:-1])
     for match in re.finditer(REGEX_NUMBER, current_line):
         index_start = match.start()
         index_end = match.end()
         substring_start = index_start-1 if index_start > 0 else index_start
         substring_end = index_end+1 if index_end < len(current_line)-2 else index_end
-        substring_previous = previous_line[substring_start:substring_end]
-        print(substring_previous)
-        substring_current = current_line[substring_start:substring_end]
-        print(substring_current)
-        substring_next = next_line[substring_start:substring_end]
-        print(substring_next)
         star_line = None
         if len(previous_line) > 0:
-            for star in re.finditer(REGEX_STAR, previous_line[substring_start:substring_end]):
-                star_line = iterator - 1
-                star_index = match.start() + star.start()
-                if index_start != 0:
-                    star_index -= 1
-                print(f'Star ({star_line}, {star_index})')
-                stars.multiply_power(star_line, star_index, int(match.group()))
-                print(f'Star power: {stars.stars[star_line][star_index].power}')
-        for star in re.finditer(REGEX_STAR, current_line[substring_start:substring_end]):
-            star_line = iterator
-            star_index = match.start() + star.start()
-            if index_start != 0:
-                star_index -= 1
-            print(f'Star ({star_line}, {star_index})')
-            stars.multiply_power(star_line, star_index, int(match.group()))
-            print(f'Star power: {stars.stars[star_line][star_index].power}')
+            process_stars_in_line(match, previous_line[substring_start:substring_end], iterator - 1, index_start, stars)
+        process_stars_in_line(match, current_line[substring_start:substring_end], iterator, index_start, stars)
         if len(next_line) > 0:
-            for star in re.finditer(REGEX_STAR, next_line[substring_start:substring_end]):
-                star_line = iterator + 1
-                star_index = match.start() + star.start()
-                if index_start != 0:
-                    star_index -= 1
-                print(f'Star ({star_line}, {star_index})')
-                stars.multiply_power(star_line, star_index, int(match.group()))
-                print(f'Star power: {stars.stars[star_line][star_index].power}')
+            process_stars_in_line(match, next_line[substring_start:substring_end], iterator + 1, index_start, stars)
+
+def process_stars_in_line(match, substring, star_line, index_start, stars):
+    for star in re.finditer(REGEX_STAR, substring):
+        star_index = match.start() + star.start()
+        if index_start != 0:
+            star_index -= 1
+        stars.multiply_power(star_line, star_index, int(match.group()))
 
 def process_stars(stars):
     sum = 0
@@ -86,7 +62,6 @@ def process_stars(stars):
         for index in star_line.keys():
             star = star_line[index]
             if star.multiplications == 2:
-                print(f'Gear ({line}, {index})')
                 sum += star.power
     return sum
 

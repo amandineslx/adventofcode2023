@@ -1,4 +1,4 @@
-import re,json
+import re
 
 INPUT_FILE = '04-input.txt'
 TICKETS = dict()

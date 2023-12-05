@@ -34,9 +34,21 @@ class Maps:
     def get_closest_location(self):
         min = 0
         for seed in self.seeds:
-            location = self.get_location(int(seed))
+            location = self.get_location(seed)
             if min == 0 or location < min:
                 min = location
+        return min
+
+    def get_closest_location_with_range(self):
+        min = 0
+        iterator = 0
+        while iterator < len(self.seeds)/2:
+            for seed_number in range(self.seeds[2 * iterator], self.seeds[2 * iterator] + self.seeds[2 * iterator + 1] - 1):
+                print(seed_number)
+                location = self.get_location(seed_number)
+                if min == 0 or location < min:
+                    min = location
+            iterator += 1
         return min
 
 def parse_input():
@@ -44,7 +56,7 @@ def parse_input():
     with open(INPUT_FILE, 'r') as f:
         lines = f.readlines()
         seeds_line = lines[0]
-    maps.seeds = seeds_line[:-1].split(" ")[1:]
+    maps.seeds = [int(seed) for seed in seeds_line[:-1].split(" ")[1:]]
     iterator = 1
     m = None
     while iterator < len(lines) - 1:
@@ -73,6 +85,6 @@ def parse_input():
 
 def main():
     maps = parse_input()
-    return maps.get_closest_location()
+    return maps.get_closest_location(),maps.get_closest_location_with_range()
 
 print(main())

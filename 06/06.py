@@ -18,10 +18,8 @@ def compute_part1():
         times_s,distances_s = f.readlines()
     distances = [part for part in distances_s[:-1].split(" ") if part][1:]
     times = [part for part in times_s[:-1].split(" ") if part][1:]
-    for i in range(len(times)):
-        race_max_time = int(times[i])
-        distance_min = int(distances[i])
-        part1 *= get_number_of_ways_to_win(race_max_time, distance_min)
+    for time,distance in zip(times,distances):
+        part1 *= get_number_of_ways_to_win(int(time), int(distance))
     return part1
 
 def compute_part2():
